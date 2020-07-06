@@ -3,8 +3,8 @@ import { LinkContainer } from "react-router-bootstrap";
 import "./App.css";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { Home } from "./Components/Home";
-import Login from "./Components/Login";
-import NotFound from "./Components/NotFound";
+import { Login } from "./Components/Login";
+import { NotFound } from "./Components/NotFound";
 
 function App() {
   return (

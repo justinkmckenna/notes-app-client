@@ -1,9 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Button, FormGroup, FormControl, FormLabel } from "react-bootstrap";
 import { Auth } from "aws-amplify";
 import "./Login.css";
+import { observer } from "mobx-react";
+import { AuthenticatedStoreContext } from "../Stores/AuthenticatedStore";
 
-export default function Login() {
+export const Login = observer(() => {
+  const authenticatedStore = useContext(AuthenticatedStoreContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -13,7 +16,7 @@ export default function Login() {
 
   async function handleSubmit(event: { preventDefault: () => void; }) {
     event.preventDefault();
-  
+
     try {
       await Auth.signIn(email, password);
       alert("Logged in");
@@ -48,4 +51,4 @@ export default function Login() {
       </form>
     </div>
   );
-}
+});
