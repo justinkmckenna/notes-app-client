@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useContext } from "react";
 import { observer } from "mobx-react";
-import "../App.css";
+import "./Home.css";
 import { AuthenticatedStoreContext } from "../Stores/AuthenticatedStore";
 
 export const Home = observer(() => {

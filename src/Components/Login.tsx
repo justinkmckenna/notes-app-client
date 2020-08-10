@@ -1,14 +1,18 @@
 import React, { useState, useContext } from "react";
-import { Button, FormGroup, FormControl, FormLabel } from "react-bootstrap";
+import { FormGroup, FormControl, FormLabel } from "react-bootstrap";
 import { Auth } from "aws-amplify";
 import "./Login.css";
 import { observer } from "mobx-react";
 import { AuthenticatedStoreContext } from "../Stores/AuthenticatedStore";
+import { useHistory } from "react-router-dom";
+import LoaderButton from "./LoaderButton";
 
 export const Login = observer(() => {
+  const history = useHistory();
   const authenticatedStore = useContext(AuthenticatedStoreContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   function validateForm() {
     return email.length > 0 && password.length > 0;
@@ -16,12 +20,14 @@ export const Login = observer(() => {
 
   async function handleSubmit(event: { preventDefault: () => void; }) {
     event.preventDefault();
-
+    setIsLoading(true);
     try {
       await Auth.signIn(email, password);
-      alert("Logged in");
+      authenticatedStore.authenticated = true;
+      history.push("/");
     } catch (e) {
       alert(e.message);
+      setIsLoading(false);
     }
   }
 
@@ -45,9 +51,9 @@ export const Login = observer(() => {
             type="password"
           />
         </FormGroup>
-        <Button block disabled={!validateForm()} type="submit">
-          Login
-        </Button>
+        <LoaderButton block type="submit" bsSize="large" isLoading={isLoading} disabled={!validateForm()}>
+            Login
+        </LoaderButton>
       </form>
     </div>
   );
