@@ -7,6 +7,8 @@ import { useContext } from "react";
 import { Auth } from "aws-amplify";
 import { useHistory } from "react-router-dom";
 
+// FIX MENU ON MOBILE
+
 export const Nav = observer(() => {
     const history = useHistory();
     const authenticatedStore = useContext(AuthenticatedStoreContext);

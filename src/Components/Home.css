@@ -1,5 +1,5 @@
 .Home .lander {
-    padding: 80px 0;
+  padding-top: 50px;
     text-align: center;
   }
   
@@ -10,4 +10,15 @@
   
   .Home .lander p {
     color: #999;
+  }
+
+  @media all and (min-width: 480px) {
+    .Home form {
+      margin: 0 auto;
+      max-width: 320px;
+    }
+  }
+
+  .notes-list {
+    padding-top: 10px;
   }

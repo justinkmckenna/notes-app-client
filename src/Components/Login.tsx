@@ -55,7 +55,7 @@ export const Login = observer(() => {
             type="password"
           />
         </FormGroup>
-        <LoaderButton block type="submit" bsSize="large" isLoading={isLoading} disabled={!validateForm()}>
+        <LoaderButton block type="submit" bssize="large" isLoading={isLoading} disabled={!validateForm()}>
             Login
         </LoaderButton>
       </form>
