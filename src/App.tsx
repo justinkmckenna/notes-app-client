@@ -8,6 +8,7 @@ import { NotFound } from "./Components/NotFound";
 import { AuthenticatedStoreContext } from "./Stores/AuthenticatedStore";
 import { observer } from "mobx-react";
 import { Auth } from "aws-amplify";
+import Signup from "./Components/Signup";
 
 const App = observer(() => {
   const authenticatedStore = useContext(AuthenticatedStoreContext);
@@ -39,6 +40,7 @@ const App = observer(() => {
           <Switch>
             <Route exact path="/" component={Home} />
             <Route exact path="/login" component={Login} />
+            <Route exact path="/signup" component={Signup} />
             <Route component={NotFound} />
           </Switch>
         </BrowserRouter>}
