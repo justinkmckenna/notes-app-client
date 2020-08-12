@@ -28,14 +28,14 @@ export const Home = observer(() => {
       if (!authenticatedStore.authenticated) {
         return;
       }
-  
+
       try {
         getNotes();
       } catch (e) {
         onError(e);
       }
     }
-  
+
     onLoad();
   }, [authenticatedStore.authenticated]);
 
@@ -46,11 +46,11 @@ export const Home = observer(() => {
   async function handleSubmit(event: any) {
     event.preventDefault();
     try {
-        await createNote(fields.newNote);
-        getNotes()
-      } catch (e) {
-        onError(e);
-      }
+      await createNote(fields.newNote);
+      getNotes()
+    } catch (e) {
+      onError(e);
+    }
   }
 
   async function getNotes() {
@@ -60,7 +60,7 @@ export const Home = observer(() => {
 
   function createNote(noteContent: string) {
     return API.post("notes", "/notes", {
-      body: {"content": noteContent}
+      body: { "content": noteContent }
     });
   }
 
@@ -107,24 +107,24 @@ export const Home = observer(() => {
           />
         </FormGroup>
         <LoaderButton block type="submit" bssize="large" disabled={!validateForm()}>
-            Add Note
+          Add Note
         </LoaderButton>
       </form>
       <ul className="list-group notes-list">
         {notes &&
           <div>
-          {notes!.map(note => (
-            <div className="noteWrapper" key={note.noteId}>
-              <FontAwesomeIcon className="delete" icon={faTimesCircle} onClick={deleteNote(note.noteId)} />
-              <li className="list-group-item">
-                <EditableLabel 
-                  text={note.content}
-                  onFocus={handleFocus}
-                  onFocusOut={handleFocusOut}
-              />
-              </li>
-            </div>
-          ))}
+            {notes!.map(note => (
+              <div className="noteWrapper" key={note.noteId}>
+                <FontAwesomeIcon className="delete" icon={faTimesCircle} onClick={deleteNote(note.noteId)} />
+                <li className="list-group-item">
+                  <EditableLabel
+                    text={note.content}
+                    onFocus={handleFocus}
+                    onFocusOut={handleFocusOut}
+                  />
+                </li>
+              </div>
+            ))}
           </div>}
       </ul>
     </div>
