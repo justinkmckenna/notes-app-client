@@ -8,8 +8,11 @@ import { onError } from "../Libs/errorLib";
 import { API } from "aws-amplify";
 import { FormGroup, FormLabel, FormControl } from "react-bootstrap";
 import LoaderButton from "./LoaderButton";
+import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 // ADD PAGINATION TO NOTES
+// SORT BY DATE CREATED
 
 export const Home = observer(() => {
   const authenticatedStore = useContext(AuthenticatedStoreContext);
@@ -25,8 +28,7 @@ export const Home = observer(() => {
       }
   
       try {
-        const notes = await loadNotes();
-        setNotes(notes);
+        getNotes();
       } catch (e) {
         onError(e);
       }
@@ -34,10 +36,6 @@ export const Home = observer(() => {
   
     onLoad();
   }, [authenticatedStore.authenticated]);
-  
-  function loadNotes() {
-    return API.get("notes", "/notes", {});
-  }
 
   function validateForm() {
     return fields.newNote.length > 0; // and newNote doesn't already exist
@@ -47,17 +45,30 @@ export const Home = observer(() => {
     event.preventDefault();
     try {
         await createNote(fields.newNote);
-        const notes = await loadNotes();
-        setNotes(notes);
+        getNotes()
       } catch (e) {
         onError(e);
       }
   }
 
-  function createNote(note: string) {
+  async function getNotes() {
+    const newNotes = await API.get("notes", "/notes", {});
+    setNotes(newNotes);
+  }
+
+  function createNote(noteContent: string) {
     return API.post("notes", "/notes", {
-      body: {"content": note}
+      body: {"content": noteContent}
     });
+  }
+
+  const deleteNote = (noteId: string) => async (event: any) => {
+    try {
+      await API.del("notes", `/notes/${noteId}`, {});
+      getNotes()
+    } catch (e) {
+      onError(e);
+    }
   }
 
   return (
@@ -83,11 +94,14 @@ export const Home = observer(() => {
       <ul className="list-group notes-list">
         {notes &&
           <div>
-            {notes!.map(note => (
-              <li className="list-group-item" key={note.noteId}>
+          {notes!.map(note => (
+            <div className="noteWrapper" key={note.noteId}>
+              <FontAwesomeIcon className="delete" icon={faTimesCircle} onClick={deleteNote(note.noteId)} />
+              <li className="list-group-item">
                 {note.content}
               </li>
-            ))}
+            </div>
+          ))}
           </div>}
       </ul>
     </div>
