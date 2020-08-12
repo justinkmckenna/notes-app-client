@@ -40,3 +40,7 @@
     line-height: 10px;
     border-radius: 50%;
 }
+
+#edit-input {
+  display:none;
+}

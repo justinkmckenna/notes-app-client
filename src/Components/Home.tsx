@@ -10,6 +10,7 @@ import { FormGroup, FormLabel, FormControl } from "react-bootstrap";
 import LoaderButton from "./LoaderButton";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import EditableLabel from 'react-inline-editing';
 
 // ADD PAGINATION TO NOTES
 // SORT BY DATE CREATED
@@ -20,6 +21,7 @@ export const Home = observer(() => {
     newNote: "",
   });
   const [notes, setNotes] = useState<null | any[]>(null);
+  const [editableNote, setEditableNote] = useState<null | any>(null);
 
   useEffect(() => {
     async function onLoad() {
@@ -71,6 +73,23 @@ export const Home = observer(() => {
     }
   }
 
+  function handleFocus(text) {
+    const index = notes!.findIndex(n => n.content === text);
+    setEditableNote(notes![index]);
+  }
+
+  async function handleFocusOut(text) {
+    editableNote.content = text;
+    try {
+      await API.put("notes", `/notes/${editableNote.noteId}`, {
+        body: editableNote
+      });
+      getNotes();
+    } catch (e) {
+      onError(e);
+    }
+  }
+
   return (
     <div className="Home">
       <div className="lander">
@@ -98,7 +117,11 @@ export const Home = observer(() => {
             <div className="noteWrapper" key={note.noteId}>
               <FontAwesomeIcon className="delete" icon={faTimesCircle} onClick={deleteNote(note.noteId)} />
               <li className="list-group-item">
-                {note.content}
+                <EditableLabel 
+                  text={note.content}
+                  onFocus={handleFocus}
+                  onFocusOut={handleFocusOut}
+              />
               </li>
             </div>
           ))}
