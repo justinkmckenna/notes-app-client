@@ -32,10 +32,9 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "predeploy": "REACT_APP_STAGE=dev npm run build",
-    "deploy": "aws s3 sync build/ s3://YOUR_DEV_S3_DEPLOY_BUCKET_NAME",
-    "postdeploy": "aws cloudfront create-invalidation --distribution-id YOUR_DEV_CF_DISTRIBUTION_ID --paths '/*'",
+    "deploy": "aws s3 sync build/ s3://notes-app-client-1-dev",
     "predeploy:prod": "REACT_APP_STAGE=production npm run build",
-    "deploy:prod": "aws s3 sync build/ s3://YOUR_PROD_S3_DEPLOY_BUCKET_NAME",
+    "deploy:prod": "aws s3 sync build/ s3://notes-app-client-1",
     "postdeploy:prod": "aws cloudfront create-invalidation --distribution-id YOUR_PROD_CF_DISTRIBUTION_ID --paths '/*'",
     "eject": "react-scripts eject"
   },
