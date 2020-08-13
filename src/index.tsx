@@ -2,6 +2,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import LogRocket from 'logrocket';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import config from './config';
@@ -26,6 +27,10 @@ Amplify.configure({
     ]
   }
 });
+
+if (config.env === "prod") {
+  LogRocket.init('fc0sgx/notes');
+}
 
 ReactDOM.render(
   <BrowserRouter>

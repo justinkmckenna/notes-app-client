@@ -1,4 +1,5 @@
   const dev = {
+    env: "dev",
     apiGateway: {
       REGION: "us-east-1",
       URL: "https://ejav5kt3ta.execute-api.us-east-1.amazonaws.com/dev"
@@ -12,6 +13,7 @@
   };
   
   const prod = {
+    env: "prod",
     apiGateway: {
       REGION: "us-east-1",
       URL: "https://33h2shws89.execute-api.us-east-1.amazonaws.com/prod"

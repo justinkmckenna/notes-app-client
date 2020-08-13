@@ -5,6 +5,9 @@ import { observer } from "mobx-react";
 import { Auth } from "aws-amplify";
 import Routes from "./Routes";
 import { Nav } from "./Components/Nav";
+import LogRocket from "logrocket";
+import config from './config';
+import ErrorBoundary from "./Components/ErrorBoundary";
 
 const App = observer(() => {
   const authenticatedStore = useContext(AuthenticatedStoreContext);
@@ -18,6 +21,14 @@ const App = observer(() => {
     try {
       await Auth.currentSession();
       authenticatedStore.authenticated = true;
+      if (config.env === "prod") {
+        Auth.currentAuthenticatedUser().then((user) => {
+          LogRocket.identify(user.username, {
+            name: user.attributes.email,
+            email: user.attributes.email,
+          });
+        })
+      }
     }
     catch (e) {
       if (e !== 'No current user') {
@@ -29,10 +40,12 @@ const App = observer(() => {
   }
 
   return (
-    <div className="App container">
+    <ErrorBoundary>
+      <div className="App container">
       <Nav />
       {!isAuthenticating && <Routes />}
     </div>
+    </ErrorBoundary>
   )
 })
 
