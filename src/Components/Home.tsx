@@ -93,7 +93,7 @@ export const Home = observer(() => {
   return (
     <div className="Home">
       <div className="lander">
-        <h1>Notes Notifications</h1>
+        <h1>Notes Notification</h1>
         <p>Send Custom Notes To Yourself Daily</p>
       </div>
       <form onSubmit={handleSubmit}>
