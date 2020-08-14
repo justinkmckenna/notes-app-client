@@ -17,6 +17,14 @@ const App = observer(() => {
     onLoad();
   }, []);
 
+  function displayNotification() {
+    if (Notification.permission == 'granted') {
+      navigator.serviceWorker.getRegistration().then(function(reg) {
+        reg!.showNotification('Hello world!');
+      });
+    }
+  }
+
   async function onLoad() {
     try {
       await Auth.currentSession();
@@ -24,6 +32,7 @@ const App = observer(() => {
       Notification.requestPermission(function(status) {
         console.log('Notification permission status:', status);
       });
+      displayNotification();
       if (config.env === "prod") {
         Auth.currentAuthenticatedUser().then((user) => {
           LogRocket.identify(user.username, {
