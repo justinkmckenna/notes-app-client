@@ -59,7 +59,7 @@ export const Login = observer(() => {
             Login
         </LoaderButton>
       </form>
-      <a href="/signup">Create an account.</a>
+      <a href="/signup">Create an account!</a>
     </div>
   );
 });
