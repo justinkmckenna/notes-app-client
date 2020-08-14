@@ -13,18 +13,25 @@ const App = observer(() => {
   const authenticatedStore = useContext(AuthenticatedStoreContext);
   const [isAuthenticating, setIsAuthenticating] = useState(true);
 
-  function displayNotification() {
+  function registerServiceWorker() {
     if (Notification.permission == 'granted') {
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('/service-worker.js')
         .then(function(registration) {
           console.log('Registration successful, scope is:', registration.scope);
-          registration.showNotification('Hello world!');
         })
         .catch(function(error) {
           console.log('Service worker registration failed, error:', error);
         });
       }
+    }
+  }
+
+  function displayTestNotification() {
+    if (Notification.permission == 'granted') {
+      navigator.serviceWorker.getRegistration().then(function(reg) {
+        reg!.showNotification('Hello world!');
+      });
     }
   }
 
@@ -39,7 +46,8 @@ const App = observer(() => {
       Notification.requestPermission(function(status) {
         console.log('Notification permission status:', status);
       });
-      displayNotification();
+      registerServiceWorker();
+      displayTestNotification();
       if (config.env === "prod") {
         Auth.currentAuthenticatedUser().then((user) => {
           LogRocket.identify(user.username, {
