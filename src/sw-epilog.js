@@ -7,6 +7,7 @@ self.addEventListener('notificationclick', function(e) {
     if (action === 'close') {
       notification.close();
     } else {
+        console.log("why")
       // eslint-disable-next-line no-undef
       clients.openWindow('https://d2c9h0xuf9fw04.cloudfront.net/');
       notification.close();
