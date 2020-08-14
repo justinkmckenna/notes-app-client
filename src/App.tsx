@@ -22,7 +22,6 @@ const App = observer(() => {
       navigator.serviceWorker.getRegistration().then(function(reg) {
         var options = {
           body: 'Here is a notification body!',
-          icon: '/list-icon-512-248169.png',
           vibrate: [100, 50, 100],
           data: {
             dateOfArrival: Date.now(),
@@ -33,7 +32,7 @@ const App = observer(() => {
       });
     }
   }
-
+  
   async function onLoad() {
     try {
       await Auth.currentSession();

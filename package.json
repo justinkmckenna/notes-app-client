@@ -33,7 +33,8 @@
   },
   "scripts": {
     "start": "REACT_APP_STAGE=dev react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts build && npm run-script sw-epilog",
+    "sw-epilog": "cat src/sw-epilog.js >> build/service-worker.js",
     "test": "react-scripts test",
     "predeploy": "REACT_APP_STAGE=dev npm run build",
     "deploy": "aws s3 sync build/ s3://notes-app-client-1-dev",
