@@ -1,11 +1,12 @@
 import * as React from "react";
 import "./Nav.css";
 import { AuthenticatedStoreContext } from "../Stores/AuthenticatedStore";
-import { LinkContainer } from "react-router-bootstrap";
 import { observer } from "mobx-react";
 import { useContext } from "react";
 import { Auth } from "aws-amplify";
 import { useHistory } from "react-router-dom";
+import "../../node_modules/jquery/dist/jquery.min.js";
+import "../../node_modules/bootstrap/dist/js/bootstrap.min.js";
 
 // FIX MENU ON MOBILE
 
@@ -17,7 +18,7 @@ export const Nav = observer(() => {
         Auth.signOut();
         authenticatedStore.authenticated = false;
         history.push("/login");
-      }
+    }
 
     return (
         <nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -28,20 +29,16 @@ export const Nav = observer(() => {
 
             <div className="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul className="navbar-nav mr-auto">
-                    <LinkContainer to="/">
-                        <li className="nav-item">
-                            <a className="nav-link" href="/">Home</a>
-                        </li>
-                    </LinkContainer>
+                    <li className="nav-item active">
+                        <a className="nav-link" href="/">Home</a>
+                    </li>
                     {!authenticatedStore.authenticated ? (
-                        <LinkContainer to="/login">
-                            <li className="nav-item">
-                                <a className="nav-link" href="/login">Log In</a>
-                            </li>
-                        </LinkContainer>
+                        <li className="nav-item">
+                            <a className="nav-link" href="/login">Log In</a>
+                        </li>
                     ) : (
                             <li className="nav-item">
-                                <a className="nav-link" onClick={logout}>Log Out</a>
+                                <a className="nav-link" href="" onClick={logout}>Log Out</a>
                             </li>
                         )}
                 </ul>
