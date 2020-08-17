@@ -27,7 +27,7 @@ export const Login = observer(() => {
     setIsLoading(true);
     try {
       await Auth.signIn(fields.email, fields.password);
-      authenticatedStore.authenticated = true;
+      authenticatedStore.setAuthenticatedUser();
       history.push("/");
     } catch (e) {
       onError(e);

@@ -3,25 +3,23 @@ import { useContext, useState, useEffect } from "react";
 import { observer } from "mobx-react";
 import "./Home.css";
 import { AuthenticatedStoreContext } from "../Stores/AuthenticatedStore";
-import { useFormFields } from "../Libs/hooksLib";
 import { onError } from "../Libs/errorLib";
-import { API } from "aws-amplify";
-import { FormGroup, FormLabel, FormControl } from "react-bootstrap";
-import LoaderButton from "./LoaderButton";
-import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import EditableLabel from 'react-inline-editing';
-
-// ADD PAGINATION TO NOTES
-// SORT BY DATE CREATED
+import Pagination from "react-js-pagination";
+import { NotesStoreContext } from "../Stores/NotesStore";
+import { Notes } from "./Notes";
 
 export const Home = observer(() => {
   const authenticatedStore = useContext(AuthenticatedStoreContext);
-  const [fields, handleFieldChange] = useFormFields({
-    newNote: "",
-  });
-  const [notes, setNotes] = useState<null | any[]>(null);
-  const [editableNote, setEditableNote] = useState<null | any>(null);
+  const notesStore = useContext(NotesStoreContext);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [notesPerPage] = useState(10);
+
+  // Get current posts
+  const indexOfLastNote = currentPage * notesPerPage;
+  const indexOfFirstNote = indexOfLastNote - notesPerPage;
+  const currentNotes = notesStore.notes!.slice(indexOfFirstNote, indexOfLastNote);
+
+  const paginate = pageNumber => setCurrentPage(pageNumber);
 
   useEffect(() => {
     async function onLoad() {
@@ -30,7 +28,7 @@ export const Home = observer(() => {
       }
 
       try {
-        getNotes();
+        notesStore.getNotes();
       } catch (e) {
         onError(e);
       }
@@ -39,55 +37,8 @@ export const Home = observer(() => {
     onLoad();
   }, [authenticatedStore.authenticated]);
 
-  function validateForm() {
-    return fields.newNote.length > 0; // and newNote doesn't already exist
-  }
-
-  async function handleSubmit(event: any) {
-    event.preventDefault();
-    try {
-      await createNote(fields.newNote);
-      getNotes()
-    } catch (e) {
-      onError(e);
-    }
-  }
-
-  async function getNotes() {
-    const newNotes = await API.get("notes", "/notes", {});
-    setNotes(newNotes);
-  }
-
-  function createNote(noteContent: string) {
-    return API.post("notes", "/notes", {
-      body: { "content": noteContent }
-    });
-  }
-
-  const deleteNote = (noteId: string) => async (event: any) => {
-    try {
-      await API.del("notes", `/notes/${noteId}`, {});
-      getNotes()
-    } catch (e) {
-      onError(e);
-    }
-  }
-
-  function handleFocus(text) {
-    const index = notes!.findIndex(n => n.content === text);
-    setEditableNote(notes![index]);
-  }
-
-  async function handleFocusOut(text) {
-    editableNote.content = text;
-    try {
-      await API.put("notes", `/notes/${editableNote.noteId}`, {
-        body: editableNote
-      });
-      getNotes();
-    } catch (e) {
-      onError(e);
-    }
+  function handlePageChange() {
+    console.log('ah');
   }
 
   return (
@@ -96,37 +47,14 @@ export const Home = observer(() => {
         <h1>Notes Notifications</h1>
         <p>Send Custom Notes To Yourself Daily</p>
       </div>
-      <form onSubmit={handleSubmit}>
-        <FormGroup controlId="newNote">
-          <FormLabel>New Note</FormLabel>
-          <FormControl
-            autoFocus
-            type="input"
-            value={fields.newNote}
-            onChange={handleFieldChange}
-          />
-        </FormGroup>
-        <LoaderButton block type="submit" bssize="large" disabled={!validateForm()}>
-          Add Note
-        </LoaderButton>
-      </form>
-      <ul className="list-group notes-list">
-        {notes &&
-          <div>
-            {notes!.map(note => (
-              <div className="noteWrapper" key={note.noteId}>
-                <FontAwesomeIcon className="delete" icon={faTimesCircle} onClick={deleteNote(note.noteId)} />
-                <li className="list-group-item">
-                  <EditableLabel
-                    text={note.content}
-                    onFocus={handleFocus}
-                    onFocusOut={handleFocusOut}
-                  />
-                </li>
-              </div>
-            ))}
-          </div>}
-      </ul>
+      <Notes />
+      <Pagination
+          activePage={1}
+          itemsCountPerPage={10}
+          totalItemsCount={450}
+          pageRangeDisplayed={5}
+          onChange={handlePageChange}
+        />
     </div>
   );
 });

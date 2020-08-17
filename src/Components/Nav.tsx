@@ -8,8 +8,6 @@ import { useHistory } from "react-router-dom";
 import "../../node_modules/jquery/dist/jquery.min.js";
 import "../../node_modules/bootstrap/dist/js/bootstrap.min.js";
 
-// FIX MENU ON MOBILE
-
 export const Nav = observer(() => {
     const history = useHistory();
     const authenticatedStore = useContext(AuthenticatedStoreContext);
@@ -29,19 +27,25 @@ export const Nav = observer(() => {
 
             <div className="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul className="navbar-nav mr-auto">
-                    <li className="nav-item active">
+                    <li className="nav-item">
                         <a className="nav-link" href="/">Home</a>
                     </li>
-                    {!authenticatedStore.authenticated ? (
-                        <li className="nav-item">
-                            <a className="nav-link" href="/login">Log In</a>
-                        </li>
-                    ) : (
-                            <li className="nav-item">
-                                <a className="nav-link" href="" onClick={logout}>Log Out</a>
-                            </li>
-                        )}
                 </ul>
+                <ul className="navbar-nav mr-2">
+                        {authenticatedStore.authenticated &&
+                            <li className="nav-item">
+                                <a className="nav-link email" href="/">{authenticatedStore.userEmail},</a>
+                            </li>}
+                        {!authenticatedStore.authenticated ? (
+                            <li className="nav-item">
+                                <a className="nav-link" href="/login">Log In</a>
+                            </li>
+                        ) : (
+                                <li className="nav-item">
+                                    <a className="nav-link" href="/login" onClick={logout}>Log Out</a>
+                                </li>
+                            )}
+                    </ul>
             </div>
         </nav>
     );

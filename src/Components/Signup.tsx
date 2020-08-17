@@ -92,7 +92,7 @@ export default function Signup() {
                         Please check your email for the code.
                     </small>
                     <small className="form-text help-text resendCodeText" onClick={resendConfirmationCode}>
-                        { resentCode ? <p>Code Resent.</p> : <a>Resend Code.</a>}
+                        { resentCode ? <p>Code Resent.</p> : <p className="clickable">Resend Code.</p>}
                     </small>
                 </FormGroup>
                 <LoaderButton
