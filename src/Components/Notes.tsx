@@ -6,12 +6,13 @@ import { AuthenticatedStoreContext } from "../Stores/AuthenticatedStore";
 import { useFormFields } from "../Libs/hooksLib";
 import { onError } from "../Libs/errorLib";
 import { API } from "aws-amplify";
-import { FormGroup, FormLabel, FormControl } from "react-bootstrap";
+import { FormGroup, FormLabel, FormControl, Form } from "react-bootstrap";
 import LoaderButton from "./LoaderButton";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import EditableLabel from 'react-inline-editing';
 import { NotesStoreContext } from "../Stores/NotesStore";
+import ReactDOM from "react-dom";
 
 export const Notes = observer(() => {
     const authenticatedStore = useContext(AuthenticatedStoreContext);
@@ -45,6 +46,8 @@ export const Notes = observer(() => {
         event.preventDefault();
         try {
             await createNote(fields.newNote);
+            fields.newNote = "";
+            notesStore.currentPage = 1;
             notesStore.getNotes();
         } catch (e) {
             onError(e);
@@ -86,23 +89,18 @@ export const Notes = observer(() => {
     return (
         <div>
             <form onSubmit={handleSubmit}>
-                <FormGroup controlId="newNote">
-                    <FormLabel>New Note</FormLabel>
-                    <FormControl
-                        autoFocus
-                        type="input"
-                        value={fields.newNote}
-                        onChange={handleFieldChange}
-                    />
-                </FormGroup>
-                <LoaderButton block type="submit" bssize="large" disabled={!validateForm()}>
+                <div className="form-group">
+                    <input type="text" className="form-control" id="newNote" placeholder="Enter a new note" 
+                    value={fields.newNote} onChange={handleFieldChange} />
+                </div>
+                <LoaderButton block type="submit" bssize="large" disabled={!validateForm()} >
                     Add Note
                 </LoaderButton>
             </form>
             <ul className="list-group notes-list">
-                {notesStore.notes &&
+                {notesStore.currentNotes &&
                     <div>
-                        {notesStore.notes!.map(note => (
+                        {notesStore.currentNotes!.map(note => (
                             <div className="noteWrapper" key={note.noteId}>
                                 <FontAwesomeIcon className="delete" icon={faTimesCircle} onClick={deleteNote(note.noteId)} />
                                 <li className="list-group-item">

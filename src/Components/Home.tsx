@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useContext, useState, useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { observer } from "mobx-react";
 import "./Home.css";
 import { AuthenticatedStoreContext } from "../Stores/AuthenticatedStore";
@@ -11,15 +11,6 @@ import { Notes } from "./Notes";
 export const Home = observer(() => {
   const authenticatedStore = useContext(AuthenticatedStoreContext);
   const notesStore = useContext(NotesStoreContext);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [notesPerPage] = useState(10);
-
-  // Get current posts
-  const indexOfLastNote = currentPage * notesPerPage;
-  const indexOfFirstNote = indexOfLastNote - notesPerPage;
-  const currentNotes = notesStore.notes!.slice(indexOfFirstNote, indexOfLastNote);
-
-  const paginate = pageNumber => setCurrentPage(pageNumber);
 
   useEffect(() => {
     async function onLoad() {
@@ -37,8 +28,9 @@ export const Home = observer(() => {
     onLoad();
   }, [authenticatedStore.authenticated]);
 
-  function handlePageChange() {
-    console.log('ah');
+  function handlePageChange(pageNumber: number) {
+    notesStore.currentPage = pageNumber;
+    notesStore.getCurrentNotes();
   }
 
   return (
@@ -49,9 +41,9 @@ export const Home = observer(() => {
       </div>
       <Notes />
       <Pagination
-          activePage={1}
-          itemsCountPerPage={10}
-          totalItemsCount={450}
+          activePage={notesStore.currentPage}
+          itemsCountPerPage={notesStore.notesPerPage}
+          totalItemsCount={notesStore.notes!.length}
           pageRangeDisplayed={5}
           onChange={handlePageChange}
         />
