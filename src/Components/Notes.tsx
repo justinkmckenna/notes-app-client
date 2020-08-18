@@ -6,13 +6,11 @@ import { AuthenticatedStoreContext } from "../Stores/AuthenticatedStore";
 import { useFormFields } from "../Libs/hooksLib";
 import { onError } from "../Libs/errorLib";
 import { API } from "aws-amplify";
-import { FormGroup, FormLabel, FormControl, Form } from "react-bootstrap";
 import LoaderButton from "./LoaderButton";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import EditableLabel from 'react-inline-editing';
 import { NotesStoreContext } from "../Stores/NotesStore";
-import ReactDOM from "react-dom";
 
 export const Notes = observer(() => {
     const authenticatedStore = useContext(AuthenticatedStoreContext);
@@ -39,12 +37,17 @@ export const Notes = observer(() => {
     }, [authenticatedStore.authenticated]);
 
     function validateForm() {
-        return fields.newNote.length > 0; // and newNote doesn't already exist
+        return fields.newNote.length > 0;
+    }
+
+    function noteExists(note: string) {
+        return notesStore.notes?.some(n => n.content === note);
     }
 
     async function handleSubmit(event: any) {
         event.preventDefault();
         try {
+            if (noteExists(fields.newNote)) throw Error('Note already exists.');
             await createNote(fields.newNote);
             fields.newNote = "";
             notesStore.currentPage = 1;

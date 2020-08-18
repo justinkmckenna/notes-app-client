@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { observer } from "mobx-react";
 import "./Home.css";
 import { AuthenticatedStoreContext } from "../Stores/AuthenticatedStore";
@@ -11,6 +11,7 @@ import { Notes } from "./Notes";
 export const Home = observer(() => {
   const authenticatedStore = useContext(AuthenticatedStoreContext);
   const notesStore = useContext(NotesStoreContext);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function onLoad() {
@@ -20,6 +21,7 @@ export const Home = observer(() => {
 
       try {
         notesStore.getNotes();
+        setIsLoading(false);
       } catch (e) {
         onError(e);
       }
@@ -39,14 +41,18 @@ export const Home = observer(() => {
         <h1>Notes Notifications</h1>
         <p>Send Custom Notes To Yourself Daily</p>
       </div>
-      <Notes />
-      <Pagination
-          activePage={notesStore.currentPage}
-          itemsCountPerPage={notesStore.notesPerPage}
-          totalItemsCount={notesStore.notes!.length}
-          pageRangeDisplayed={5}
-          onChange={handlePageChange}
-        />
+      {!isLoading && <div>
+        <Notes />
+        <Pagination
+            itemClass="page-item"
+            linkClass="page-link"
+            activePage={notesStore.currentPage}
+            itemsCountPerPage={notesStore.notesPerPage}
+            totalItemsCount={notesStore.notes!.length}
+            pageRangeDisplayed={5}
+            onChange={handlePageChange}
+          />
+      </div>}
     </div>
   );
 });
